@@ -1,10 +1,22 @@
 package com.example.instazoo.entity
 
+import net.minidev.json.annotate.JsonIgnore
+import javax.persistence.*
+
+@Entity
+@Table(name = "images")
 data class Image(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
+    @Column(nullable = false)
     val name: String,
+    @Lob
+    @Column(columnDefinition = "BYTEA")
     val byte: ByteArray,
+    @JsonIgnore
     val userId: Long,
+    @JsonIgnore
     val postId: Long
 ) {
     override fun equals(other: Any?): Boolean {
