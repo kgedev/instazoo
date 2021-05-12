@@ -24,7 +24,7 @@ data class User(
     @Column(length = 3000)
     val password: String,
     @ElementCollection(targetClass = ERole::class)
-    @CollectionTable(name = "user_role", joinColumns = [JoinColumn("user_id")])
+    @CollectionTable(name = "user_role", joinColumns = [JoinColumn(name = "user_id")])
     val role: Set<ERole> = mutableSetOf(),
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
     val posts: MutableList<Post> = mutableListOf(),
