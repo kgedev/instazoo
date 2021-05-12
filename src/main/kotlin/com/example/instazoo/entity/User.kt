@@ -2,8 +2,11 @@ package com.example.instazoo.entity
 
 import com.example.instazoo.entity.enum.ERole
 import com.fasterxml.jackson.annotation.JsonFormat
+import org.springframework.security.core.GrantedAuthority
 import java.time.LocalDateTime
 import javax.persistence.*
+import kotlin.jvm.Transient
+import org.springframework.security.core.userdetails.UserDetails as UserDetails
 
 @Entity
 @Table(name = "users")
@@ -14,7 +17,7 @@ data class User(
     @Column(nullable = false)
     val name: String,
     @Column(unique = true, updatable = false)
-    val username: String,
+    private val username: String,
     @Column(nullable = false)
     val lastname: String,
     @Column(unique = true)
@@ -22,7 +25,7 @@ data class User(
     @Column(columnDefinition = "TEXT")
     val bio: String,
     @Column(length = 3000)
-    val password: String,
+    private val password: String,
     @ElementCollection(targetClass = ERole::class)
     @CollectionTable(name = "user_role", joinColumns = [JoinColumn(name = "user_id")])
     val role: Set<ERole> = mutableSetOf(),
@@ -31,9 +34,45 @@ data class User(
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
     @Column(updatable = false)
     var createdDate: LocalDateTime
-) {
+) : UserDetails {
+
+    @Transient
+    private val authorities: MutableCollection<out GrantedAuthority>? = null
+
     @PrePersist
     private fun onCreate() {
         createdDate = LocalDateTime.now()
+    }
+
+    /**
+     * SECURITY
+     * */
+
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
+        return authorities!!
+    }
+
+    override fun getPassword(): String {
+        return password
+    }
+
+    override fun getUsername(): String {
+        return username
+    }
+
+    override fun isAccountNonExpired(): Boolean {
+       return true
+    }
+
+    override fun isAccountNonLocked(): Boolean {
+        return true
+    }
+
+    override fun isCredentialsNonExpired(): Boolean {
+        return true
+    }
+
+    override fun isEnabled(): Boolean {
+        return true
     }
 }
