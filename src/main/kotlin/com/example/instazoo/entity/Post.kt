@@ -7,10 +7,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "posts")
-data class Post(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+class Post(
     val title: String,
     val caption: String,
     val location: String,
@@ -25,7 +22,7 @@ data class Post(
     @Column(updatable = false)
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
     var createdDate: LocalDateTime
-) {
+) : BaseEntity<Long>() {
     @PrePersist
     private fun onCreate() {
         this.createdDate = LocalDateTime.now()

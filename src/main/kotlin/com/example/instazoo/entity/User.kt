@@ -10,20 +10,17 @@ import org.springframework.security.core.userdetails.UserDetails as UserDetails
 
 @Entity
 @Table(name = "users")
-data class User(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+class User(
     @Column(nullable = false)
-    val name: String,
+    val name: String? = null,
     @Column(unique = true, updatable = false)
     private val username: String,
     @Column(nullable = false)
-    val lastname: String,
+    val lastname: String? = null,
     @Column(unique = true)
     val email: String,
     @Column(columnDefinition = "TEXT")
-    val bio: String,
+    val bio: String? = null,
     @Column(length = 3000)
     private val password: String,
     @ElementCollection(targetClass = ERole::class)
@@ -33,11 +30,10 @@ data class User(
     val posts: MutableList<Post> = mutableListOf(),
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
     @Column(updatable = false)
-    var createdDate: LocalDateTime
-) : UserDetails {
-
+    var createdDate: LocalDateTime? = null,
     @Transient
     private val authorities: MutableCollection<out GrantedAuthority>? = null
+) : BaseEntity<Long>(), UserDetails {
 
     @PrePersist
     private fun onCreate() {

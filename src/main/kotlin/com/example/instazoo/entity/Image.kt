@@ -5,10 +5,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "images")
-data class Image(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+class Image(
     @Column(nullable = false)
     val name: String,
     @Lob
@@ -18,7 +15,7 @@ data class Image(
     val userId: Long,
     @JsonIgnore
     val postId: Long
-) {
+) : BaseEntity<Long>() {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -32,14 +29,5 @@ data class Image(
         if (postId != other.postId) return false
 
         return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + name.hashCode()
-        result = 31 * result + byte.contentHashCode()
-        result = 31 * result + userId.hashCode()
-        result = 31 * result + postId.hashCode()
-        return result
     }
 }

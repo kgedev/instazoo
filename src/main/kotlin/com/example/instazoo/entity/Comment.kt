@@ -6,10 +6,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "comments")
-data class Comment(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+class Comment(
     @ManyToOne(fetch = FetchType.EAGER)
     val post: Post,
     @Column(nullable = false)
@@ -21,7 +18,7 @@ data class Comment(
     @Column(nullable = false)
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
     var createdDate: LocalDateTime
-) {
+) : BaseEntity<Long>(){
     @PrePersist
     private fun onCreate() {
         this.createdDate = LocalDateTime.now()
